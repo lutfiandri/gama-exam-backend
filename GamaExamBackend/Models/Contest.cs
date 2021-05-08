@@ -11,6 +11,9 @@ namespace GamaExamBackend.Models
         public string Title { get; set; }
         public int Duration { get; set; } // menit
         public int NumOfQuestion { get; set; }
-        public List<Question> Questions { get; set; }        
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
+        // public List<Question> Questions { get; set; } // -> ini berarti gajadi ada kan ya
     }
 }

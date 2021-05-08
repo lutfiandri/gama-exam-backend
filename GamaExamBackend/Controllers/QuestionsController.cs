@@ -23,14 +23,34 @@ namespace GamaExamBackend.Controllers
         public IEnumerable<Question> Get()
         {
             var rng = new Random();
-            return Enumerable.Range(1, 20).Select(index => new Question
+            return Enumerable.Range(1, 50).Select(index => new Question
             {
+                Id = index,
+                ContestId = rng.Next(0, 5),
                 QuestionNumber = index,
                 QuestionText = $"hello boys, question goes here... index: {index}",
                 Answers = DummyAnswer,
                 TrueAnswer = rng.Next(0, 5)
             })
             .ToArray();
+        }
+
+        [HttpGet("{contestId}")]
+        public IEnumerable<Question> Get(long contestId)
+        {
+            var rng = new Random();
+            var allQuestion = Enumerable.Range(1, 50).Select(index => new Question
+            {
+                Id = index,
+                ContestId = rng.Next(0, 5),
+                QuestionNumber = index,
+                QuestionText = $"hello boys, question goes here... index: {index}",
+                Answers = DummyAnswer,
+                TrueAnswer = rng.Next(0, 5)
+            })
+            .ToArray();
+
+            return Array.FindAll(allQuestion, q => q.ContestId == contestId );
         }
     }
 }

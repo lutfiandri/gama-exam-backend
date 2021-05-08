@@ -24,23 +24,8 @@ namespace GamaExamBackend.Controllers
                 Title = "Contest 1",
                 Duration = 60,
                 NumOfQuestion = 2,
-                Questions = new List<Question>
-                {
-                    new Question()
-                    {
-                        QuestionNumber = 1,
-                        QuestionText = $"hello boys, question num 1",
-                        Answers = DummyAnswer,
-                        TrueAnswer = 1
-                    },
-                    new Question()
-                    {
-                        QuestionNumber = 2,
-                        QuestionText = $"hello boys, question num 2",
-                        Answers = DummyAnswer,
-                        TrueAnswer = 2
-                    },
-                }
+                StartTime = new DateTime(2021, 05, 01), // tahun, bulan, tanggal
+                EndTime = new DateTime(2022, 05, 01)
             },
             new Contest()
             {
@@ -48,37 +33,8 @@ namespace GamaExamBackend.Controllers
                 Title = "Contest 2",
                 Duration = 120,
                 NumOfQuestion = 4,
-                Questions = new List<Question>
-                {
-                    new Question()
-                    {
-                        QuestionNumber = 1,
-                        QuestionText = $"hello boys, question num 1",
-                        Answers = DummyAnswer,
-                        TrueAnswer = 1
-                    },
-                    new Question()
-                    {
-                        QuestionNumber = 2,
-                        QuestionText = $"hello boys, question num 2",
-                        Answers = DummyAnswer,
-                        TrueAnswer = 2
-                    },
-                    new Question()
-                    {
-                        QuestionNumber = 3,
-                        QuestionText = $"hello boys, question num 3",
-                        Answers = DummyAnswer,
-                        TrueAnswer = 3
-                    },
-                    new Question()
-                    {
-                        QuestionNumber = 4,
-                        QuestionText = $"hello boys, question num 4",
-                        Answers = DummyAnswer,
-                        TrueAnswer = 4
-                    }
-                }
+                StartTime = new DateTime(2021, 03, 01), // tahun, bulan, tanggal
+                EndTime = new DateTime(2022, 03, 01)
             }
         };
 
