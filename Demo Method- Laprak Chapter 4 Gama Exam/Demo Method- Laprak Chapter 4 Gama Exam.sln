@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamaExamBackend", "GamaExamBackend\GamaExamBackend.csproj", "{FBB0B19C-A498-45F6-807C-01CD4D77E7FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo Method- Laprak Chapter 4 Gama Exam", "Demo Method- Laprak Chapter 4 Gama Exam.csproj", "{4759D3C9-1E28-4A41-895F-FA71497E5D1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FBB0B19C-A498-45F6-807C-01CD4D77E7FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBB0B19C-A498-45F6-807C-01CD4D77E7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FBB0B19C-A498-45F6-807C-01CD4D77E7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBB0B19C-A498-45F6-807C-01CD4D77E7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4759D3C9-1E28-4A41-895F-FA71497E5D1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4759D3C9-1E28-4A41-895F-FA71497E5D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4759D3C9-1E28-4A41-895F-FA71497E5D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4759D3C9-1E28-4A41-895F-FA71497E5D1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A2D43EEB-B69C-429E-932A-941243E5C5F0}
+		SolutionGuid = {CE462975-1106-447F-8FB5-A3F826C7BEAE}
 	EndGlobalSection
 EndGlobal
