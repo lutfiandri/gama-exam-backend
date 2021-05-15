@@ -18,6 +18,9 @@ namespace GamaExamBackend.Models
         [Column(TypeName = "nvarchar(50)")]
         public string name { get; set; }
 
+        [Column(TypeName = "nvarchar(20)")]
+        public string password { get; set; }
+
         [Column(TypeName = "nvarchar(50)")]
         public string institute { get; set; }
 
