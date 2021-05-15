@@ -29,7 +29,11 @@ namespace GamaExamBackend.Controllers
                 ContestId = rng.Next(0, 5),
                 QuestionNumber = index,
                 QuestionText = $"hello boys, question goes here... index: {index}",
-                Answers = DummyAnswer,
+                Answers_A = DummyAnswer[0],
+                Answers_B = DummyAnswer[1],
+                Answers_C = DummyAnswer[2],
+                Answers_D = DummyAnswer[3],
+                Answers_E = DummyAnswer[4],
                 TrueAnswer = rng.Next(0, 5)
             })
             .ToArray();
@@ -45,7 +49,11 @@ namespace GamaExamBackend.Controllers
                 ContestId = rng.Next(0, 5),
                 QuestionNumber = index,
                 QuestionText = $"hello boys, question goes here... index: {index}",
-                Answers = DummyAnswer,
+                Answers_A = DummyAnswer[0],
+                Answers_B = DummyAnswer[1],
+                Answers_C = DummyAnswer[2],
+                Answers_D = DummyAnswer[3],
+                Answers_E = DummyAnswer[4],
                 TrueAnswer = rng.Next(0, 5)
             })
             .ToArray();

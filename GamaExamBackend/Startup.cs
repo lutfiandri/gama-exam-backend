@@ -7,10 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GamaExamBackend.Models;
 
 namespace GamaExamBackend
 {
@@ -28,6 +30,8 @@ namespace GamaExamBackend
         {
 
             services.AddControllers();
+            services.AddDbContext<DBExamContext>(options => 
+            options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GamaExamBackend", Version = "v1" });
