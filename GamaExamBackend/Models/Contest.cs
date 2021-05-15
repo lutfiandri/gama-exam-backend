@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GamaExamBackend.Models
 {
@@ -15,5 +17,6 @@ namespace GamaExamBackend.Models
         public DateTime EndTime { get; set; }
 
         // public List<Question> Questions { get; set; } // -> ini berarti gajadi ada kan ya
+        public ICollection<Question> QuestionList { get; set; }
     }
 }
