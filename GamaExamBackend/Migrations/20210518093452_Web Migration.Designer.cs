@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamaExamBackend.Migrations
 {
     [DbContext(typeof(DBExamContext))]
-    [Migration("20210515132039_Test Migration")]
-    partial class TestMigration
+    [Migration("20210518093452_Web Migration")]
+    partial class WebMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,6 +56,34 @@ namespace GamaExamBackend.Migrations
                     b.HasIndex("DParticipantId");
 
                     b.ToTable("dContests");
+                });
+
+            modelBuilder.Entity("GamaExamBackend.Models.ContestAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Answer")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ContestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParticipantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeLeft")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContestId");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("dContestsAttempt");
                 });
 
             modelBuilder.Entity("GamaExamBackend.Models.DCreator", b =>
@@ -160,6 +188,25 @@ namespace GamaExamBackend.Migrations
                         .HasForeignKey("DParticipantId");
 
                     b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("GamaExamBackend.Models.ContestAttempt", b =>
+                {
+                    b.HasOne("GamaExamBackend.Models.Contest", "Contest")
+                        .WithMany()
+                        .HasForeignKey("ContestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GamaExamBackend.Models.DParticipant", "Participant")
+                        .WithMany()
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contest");
+
+                    b.Navigation("Participant");
                 });
 
             modelBuilder.Entity("GamaExamBackend.Models.Question", b =>

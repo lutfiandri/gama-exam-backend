@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GamaExamBackend.Migrations
 {
-    public partial class TestMigration : Migration
+    public partial class WebMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -71,6 +71,34 @@ namespace GamaExamBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "dContestsAttempt",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Answer = table.Column<string>(type: "nvarchar(500)", nullable: true),
+                    TimeLeft = table.Column<int>(type: "int", nullable: false),
+                    ContestId = table.Column<int>(type: "int", nullable: false),
+                    ParticipantId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dContestsAttempt", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_dContestsAttempt_dContests_ContestId",
+                        column: x => x.ContestId,
+                        principalTable: "dContests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_dContestsAttempt_dParticipants_ParticipantId",
+                        column: x => x.ParticipantId,
+                        principalTable: "dParticipants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "dQuestions",
                 columns: table => new
                 {
@@ -108,6 +136,16 @@ namespace GamaExamBackend.Migrations
                 column: "DParticipantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_dContestsAttempt_ContestId",
+                table: "dContestsAttempt",
+                column: "ContestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_dContestsAttempt_ParticipantId",
+                table: "dContestsAttempt",
+                column: "ParticipantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_dQuestions_ContestId",
                 table: "dQuestions",
                 column: "ContestId");
@@ -115,6 +153,9 @@ namespace GamaExamBackend.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "dContestsAttempt");
+
             migrationBuilder.DropTable(
                 name: "dQuestions");
 
