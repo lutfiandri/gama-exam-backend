@@ -9,8 +9,10 @@ using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
+
     public class DCreatorsController : Controller
     {
+
         private readonly DBExamContext _context;
 
         public DCreatorsController(DBExamContext context)

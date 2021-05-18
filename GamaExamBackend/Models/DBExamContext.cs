@@ -19,5 +19,14 @@ namespace GamaExamBackend.Models
         public DbSet<Contest> dContests { get; set; }
         public DbSet<ContestAttempt> dContestsAttempt { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DCreator>().ToTable("dCreators");
+            modelBuilder.Entity<DParticipant>().ToTable("dParticipants");
+            modelBuilder.Entity<Question>().ToTable("dQuestions");
+            modelBuilder.Entity<Contest>().ToTable("dContests");
+            modelBuilder.Entity<ContestAttempt>().ToTable("dContestsAttempt");
+        }
+
     }
 }

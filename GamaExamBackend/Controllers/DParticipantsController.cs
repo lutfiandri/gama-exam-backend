@@ -9,6 +9,7 @@ using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
+
     public class DParticipantsController : Controller
     {
         private readonly DBExamContext _context;

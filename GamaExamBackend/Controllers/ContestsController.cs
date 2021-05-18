@@ -11,6 +11,7 @@ namespace GamaExamBackend.Controllers
 {
     public class ContestsController : Controller
     {
+
         private readonly DBExamContext _context;
 
         public ContestsController(DBExamContext context)
