@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-
-    public class QuestionsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class QuestionsController : ControllerBase
     {
-
         private readonly DBExamContext _context;
 
         public QuestionsController(DBExamContext context)
@@ -20,137 +20,83 @@ namespace GamaExamBackend.Controllers
             _context = context;
         }
 
-        // GET: Questions
-        public async Task<IActionResult> Index()
+        // GET: api/Questions
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Question>>> GetdQuestions()
         {
-            var dBExamContext = _context.dQuestions.Include(q => q.Contest);
-            return View(await dBExamContext.ToListAsync());
+            return await _context.dQuestions.ToListAsync();
         }
 
-        // GET: Questions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Questions/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Question>> GetQuestion(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
-            {
-                return NotFound();
-            }
-
-            return View(question);
-        }
-
-        // GET: Questions/Create
-        public IActionResult Create()
-        {
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id");
-            return View();
-        }
-
-        // POST: Questions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(question);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
-        }
-
-        // GET: Questions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var question = await _context.dQuestions.FindAsync(id);
+
             if (question == null)
             {
                 return NotFound();
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+
+            return question;
         }
 
-        // POST: Questions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        // PUT: api/Questions/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutQuestion(int id, Question question)
         {
             if (id != question.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(question).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(question);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!QuestionExists(question.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!QuestionExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Questions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Questions
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Question>> PostQuestion(Question question)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.dQuestions.Add(question);
+            await _context.SaveChangesAsync();
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
+        }
+
+        // DELETE: api/Questions/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            var question = await _context.dQuestions.FindAsync(id);
             if (question == null)
             {
                 return NotFound();
             }
 
-            return View(question);
-        }
-
-        // POST: Questions/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var question = await _context.dQuestions.FindAsync(id);
             _context.dQuestions.Remove(question);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool QuestionExists(int id)

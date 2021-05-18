@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-    public class ContestsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ContestsController : ControllerBase
     {
-
         private readonly DBExamContext _context;
 
         public ContestsController(DBExamContext context)
@@ -19,137 +20,83 @@ namespace GamaExamBackend.Controllers
             _context = context;
         }
 
-        // GET: Contests
-        public async Task<IActionResult> Index()
+        // GET: api/Contests
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Contest>>> GetdContests()
         {
-            var dBExamContext = _context.dContests.Include(c => c.Creator);
-            return View(await dBExamContext.ToListAsync());
+            return await _context.dContests.ToListAsync();
         }
 
-        // GET: Contests/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Contests/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Contest>> GetContest(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var contest = await _context.dContests
-                .Include(c => c.Creator)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contest == null)
-            {
-                return NotFound();
-            }
-
-            return View(contest);
-        }
-
-        // GET: Contests/Create
-        public IActionResult Create()
-        {
-            ViewData["CreatorId"] = new SelectList(_context.dCreators, "Id", "Id");
-            return View();
-        }
-
-        // POST: Contests/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Duration,NumOfQuestion,StartTime,EndTime,CreatorId")] Contest contest)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(contest);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CreatorId"] = new SelectList(_context.dCreators, "Id", "Id", contest.CreatorId);
-            return View(contest);
-        }
-
-        // GET: Contests/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var contest = await _context.dContests.FindAsync(id);
+
             if (contest == null)
             {
                 return NotFound();
             }
-            ViewData["CreatorId"] = new SelectList(_context.dCreators, "Id", "Id", contest.CreatorId);
-            return View(contest);
+
+            return contest;
         }
 
-        // POST: Contests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Duration,NumOfQuestion,StartTime,EndTime,CreatorId")] Contest contest)
+        // PUT: api/Contests/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutContest(int id, Contest contest)
         {
             if (id != contest.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(contest).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(contest);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ContestExists(contest.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["CreatorId"] = new SelectList(_context.dCreators, "Id", "Id", contest.CreatorId);
-            return View(contest);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ContestExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Contests/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Contests
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Contest>> PostContest(Contest contest)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.dContests.Add(contest);
+            await _context.SaveChangesAsync();
 
-            var contest = await _context.dContests
-                .Include(c => c.Creator)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return CreatedAtAction("GetContest", new { id = contest.Id }, contest);
+        }
+
+        // DELETE: api/Contests/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteContest(int id)
+        {
+            var contest = await _context.dContests.FindAsync(id);
             if (contest == null)
             {
                 return NotFound();
             }
 
-            return View(contest);
-        }
-
-        // POST: Contests/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var contest = await _context.dContests.FindAsync(id);
             _context.dContests.Remove(contest);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool ContestExists(int id)

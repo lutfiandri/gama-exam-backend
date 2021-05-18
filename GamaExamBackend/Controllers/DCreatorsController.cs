@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-
-    public class DCreatorsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DCreatorsController : ControllerBase
     {
-
         private readonly DBExamContext _context;
 
         public DCreatorsController(DBExamContext context)
@@ -20,130 +20,83 @@ namespace GamaExamBackend.Controllers
             _context = context;
         }
 
-        // GET: DCreators
-        public async Task<IActionResult> Index()
+        // GET: api/DCreators
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<DCreator>>> GetdCreators()
         {
-            return View(await _context.dCreators.ToListAsync());
+            return await _context.dCreators.ToListAsync();
         }
 
-        // GET: DCreators/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/DCreators/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DCreator>> GetDCreator(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dCreator = await _context.dCreators
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (dCreator == null)
-            {
-                return NotFound();
-            }
-
-            return View(dCreator);
-        }
-
-        // GET: DCreators/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: DCreators/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,username,name,password,institute")] DCreator dCreator)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(dCreator);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(dCreator);
-        }
-
-        // GET: DCreators/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var dCreator = await _context.dCreators.FindAsync(id);
+
             if (dCreator == null)
             {
                 return NotFound();
             }
-            return View(dCreator);
+
+            return dCreator;
         }
 
-        // POST: DCreators/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,username,name,password,institute")] DCreator dCreator)
+        // PUT: api/DCreators/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutDCreator(int id, DCreator dCreator)
         {
             if (id != dCreator.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(dCreator).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(dCreator);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DCreatorExists(dCreator.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(dCreator);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DCreatorExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: DCreators/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/DCreators
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<DCreator>> PostDCreator(DCreator dCreator)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.dCreators.Add(dCreator);
+            await _context.SaveChangesAsync();
 
-            var dCreator = await _context.dCreators
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return CreatedAtAction("GetDCreator", new { id = dCreator.Id }, dCreator);
+        }
+
+        // DELETE: api/DCreators/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDCreator(int id)
+        {
+            var dCreator = await _context.dCreators.FindAsync(id);
             if (dCreator == null)
             {
                 return NotFound();
             }
 
-            return View(dCreator);
-        }
-
-        // POST: DCreators/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var dCreator = await _context.dCreators.FindAsync(id);
             _context.dCreators.Remove(dCreator);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool DCreatorExists(int id)
