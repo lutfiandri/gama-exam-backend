@@ -36,6 +36,6 @@ namespace GamaExamBackend.Models
         
         [ForeignKey("Contest")]
         public int ContestId { get; set; }
-        public Contest Contest { get; set; }
+        // public Contest Contest { get; set; }
     }
 }

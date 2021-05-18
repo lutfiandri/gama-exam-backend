@@ -4,14 +4,16 @@ using GamaExamBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GamaExamBackend.Migrations
 {
     [DbContext(typeof(DBExamContext))]
-    partial class DBExamContextModelSnapshot : ModelSnapshot
+    [Migration("20210518180213_Test2")]
+    partial class Test2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,6 +142,8 @@ namespace GamaExamBackend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContestId");
+
                     b.ToTable("dQuestions");
                 });
 
@@ -152,6 +156,17 @@ namespace GamaExamBackend.Migrations
                     b.HasOne("GamaExamBackend.Models.DParticipant", null)
                         .WithMany("FollowedContest")
                         .HasForeignKey("DParticipantId");
+                });
+
+            modelBuilder.Entity("GamaExamBackend.Models.Question", b =>
+                {
+                    b.HasOne("GamaExamBackend.Models.Contest", "Contest")
+                        .WithMany()
+                        .HasForeignKey("ContestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contest");
                 });
 
             modelBuilder.Entity("GamaExamBackend.Models.DCreator", b =>

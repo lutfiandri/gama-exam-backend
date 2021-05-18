@@ -4,14 +4,16 @@ using GamaExamBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GamaExamBackend.Migrations
 {
     [DbContext(typeof(DBExamContext))]
-    partial class DBExamContextModelSnapshot : ModelSnapshot
+    [Migration("20210518181217_Question_RemoveContestObject")]
+    partial class Question_RemoveContestObject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,64 +1,118 @@
-﻿using GamaExamBackend.Models;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class QuestionsController : Controller
+    [ApiController]
+    public class QuestionsController : ControllerBase
     {
-        private static readonly string[] DummyAnswer = new[]
-        {
-            "Ans1", "Ans2", "Ans3", "Ans4", "Ans5"
-        };
+        private readonly DBExamContext _context;
 
-        // Kalau yang dikirim banyak (array/list), pake IEnumerable<Type>
-        // Arrow functionnya mirip kek di javascript ternyata.. mirip lambda di python juga
-
-        [HttpGet]
-        public IEnumerable<Question> Get()
+        public QuestionsController(DBExamContext context)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 50).Select(index => new Question
-            {
-                Id = index,
-                ContestId = rng.Next(0, 5),
-                QuestionNumber = index,
-                QuestionText = $"hello boys, question goes here... index: {index}",
-                Answers_A = DummyAnswer[0],
-                Answers_B = DummyAnswer[1],
-                Answers_C = DummyAnswer[2],
-                Answers_D = DummyAnswer[3],
-                Answers_E = DummyAnswer[4],
-                TrueAnswer = rng.Next(0, 5)
-            })
-            .ToArray();
+            _context = context;
         }
 
-        [HttpGet("{contestId}")]
-        public IEnumerable<Question> Get(long contestId)
+        // GET: api/Questions
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Question>>> GetdQuestions()
         {
-            var rng = new Random();
-            var allQuestion = Enumerable.Range(1, 50).Select(index => new Question
-            {
-                Id = index,
-                ContestId = rng.Next(0, 5),
-                QuestionNumber = index,
-                QuestionText = $"hello boys, question goes here... index: {index}",
-                Answers_A = DummyAnswer[0],
-                Answers_B = DummyAnswer[1],
-                Answers_C = DummyAnswer[2],
-                Answers_D = DummyAnswer[3],
-                Answers_E = DummyAnswer[4],
-                TrueAnswer = rng.Next(0, 5)
-            })
-            .ToArray();
+            return await _context.dQuestions.ToListAsync();
+        }
 
-            return Array.FindAll(allQuestion, q => q.ContestId == contestId );
+        // GET: api/Question/contest/2
+        [HttpGet("contest/{contestId}")]
+        public async Task<ActionResult<IEnumerable<Question>>> GetContestQuestion(int contestId)
+        {
+            var all = await _context.dQuestions.ToListAsync();
+            return all.Where(q => q.ContestId == contestId).ToArray();
+
+            // ngga tau cara filter dari databasenya.
+            // ini masih select all from table, terus baru difilter.
+        }
+
+        // GET: api/Questions/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Question>> GetQuestion(int id)
+        {
+            var question = await _context.dQuestions.FindAsync(id);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            return question;
+        }
+
+        // PUT: api/Questions/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutQuestion(int id, Question question)
+        {
+            if (id != question.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(question).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!QuestionExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Questions
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Question>> PostQuestion(Question question)
+        {
+            _context.dQuestions.Add(question);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
+        }
+
+        // DELETE: api/Questions/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            var question = await _context.dQuestions.FindAsync(id);
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            _context.dQuestions.Remove(question);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool QuestionExists(int id)
+        {
+            return _context.dQuestions.Any(e => e.Id == id);
         }
     }
 }

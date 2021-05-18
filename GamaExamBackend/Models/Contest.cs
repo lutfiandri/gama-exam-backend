@@ -22,11 +22,11 @@ namespace GamaExamBackend.Models
         [Column(TypeName = "datetime2(7)")]
         public DateTime EndTime { get; set; }
 
-        [ForeignKey("DCreator")]
-        public int CreatorId { get; set; }
-        public DCreator Creator { get; set; }
+        // [ForeignKey("DCreator")]
+        // public int CreatorId { get; set; }
+        // public DCreator Creator { get; set; }
 
         // public List<Question> Questions { get; set; } // -> ini berarti gajadi ada kan ya
-        public ICollection<Question> Questions { get; set; }
+        // public ICollection<Question> Questions { get; set; }
     }
 }
