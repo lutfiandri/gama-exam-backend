@@ -9,23 +9,23 @@ using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-    public class QuestionsController : Controller
+    public class ContestAttemptsController : Controller
     {
         private readonly DBExamContext _context;
 
-        public QuestionsController(DBExamContext context)
+        public ContestAttemptsController(DBExamContext context)
         {
             _context = context;
         }
 
-        // GET: Questions
+        // GET: ContestAttempts
         public async Task<IActionResult> Index()
         {
-            var dBExamContext = _context.dQuestions.Include(q => q.Contest);
+            var dBExamContext = _context.dContestsAttempt.Include(c => c.Contest).Include(c => c.Participant);
             return View(await dBExamContext.ToListAsync());
         }
 
-        // GET: Questions/Details/5
+        // GET: ContestAttempts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +33,45 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
+            var contestAttempt = await _context.dContestsAttempt
+                .Include(c => c.Contest)
+                .Include(c => c.Participant)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (contestAttempt == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(contestAttempt);
         }
 
-        // GET: Questions/Create
+        // GET: ContestAttempts/Create
         public IActionResult Create()
         {
             ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id");
+            ViewData["ParticipantId"] = new SelectList(_context.dParticipants, "Id", "Id");
             return View();
         }
 
-        // POST: Questions/Create
+        // POST: ContestAttempts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        public async Task<IActionResult> Create([Bind("Id,Answer,TimeLeft,ContestId,ParticipantId")] ContestAttempt contestAttempt)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(question);
+                _context.Add(contestAttempt);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", contestAttempt.ContestId);
+            ViewData["ParticipantId"] = new SelectList(_context.dParticipants, "Id", "Id", contestAttempt.ParticipantId);
+            return View(contestAttempt);
         }
 
-        // GET: Questions/Edit/5
+        // GET: ContestAttempts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +79,24 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions.FindAsync(id);
-            if (question == null)
+            var contestAttempt = await _context.dContestsAttempt.FindAsync(id);
+            if (contestAttempt == null)
             {
                 return NotFound();
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", contestAttempt.ContestId);
+            ViewData["ParticipantId"] = new SelectList(_context.dParticipants, "Id", "Id", contestAttempt.ParticipantId);
+            return View(contestAttempt);
         }
 
-        // POST: Questions/Edit/5
+        // POST: ContestAttempts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Answer,TimeLeft,ContestId,ParticipantId")] ContestAttempt contestAttempt)
         {
-            if (id != question.Id)
+            if (id != contestAttempt.Id)
             {
                 return NotFound();
             }
@@ -101,12 +105,12 @@ namespace GamaExamBackend.Controllers
             {
                 try
                 {
-                    _context.Update(question);
+                    _context.Update(contestAttempt);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!QuestionExists(question.Id))
+                    if (!ContestAttemptExists(contestAttempt.Id))
                     {
                         return NotFound();
                     }
@@ -117,11 +121,12 @@ namespace GamaExamBackend.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", contestAttempt.ContestId);
+            ViewData["ParticipantId"] = new SelectList(_context.dParticipants, "Id", "Id", contestAttempt.ParticipantId);
+            return View(contestAttempt);
         }
 
-        // GET: Questions/Delete/5
+        // GET: ContestAttempts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +134,32 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
+            var contestAttempt = await _context.dContestsAttempt
+                .Include(c => c.Contest)
+                .Include(c => c.Participant)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (contestAttempt == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(contestAttempt);
         }
 
-        // POST: Questions/Delete/5
+        // POST: ContestAttempts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var question = await _context.dQuestions.FindAsync(id);
-            _context.dQuestions.Remove(question);
+            var contestAttempt = await _context.dContestsAttempt.FindAsync(id);
+            _context.dContestsAttempt.Remove(contestAttempt);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool QuestionExists(int id)
+        private bool ContestAttemptExists(int id)
         {
-            return _context.dQuestions.Any(e => e.Id == id);
+            return _context.dContestsAttempt.Any(e => e.Id == id);
         }
     }
 }

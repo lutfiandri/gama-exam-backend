@@ -9,23 +9,22 @@ using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-    public class QuestionsController : Controller
+    public class DParticipantsController : Controller
     {
         private readonly DBExamContext _context;
 
-        public QuestionsController(DBExamContext context)
+        public DParticipantsController(DBExamContext context)
         {
             _context = context;
         }
 
-        // GET: Questions
+        // GET: DParticipants
         public async Task<IActionResult> Index()
         {
-            var dBExamContext = _context.dQuestions.Include(q => q.Contest);
-            return View(await dBExamContext.ToListAsync());
+            return View(await _context.dParticipants.ToListAsync());
         }
 
-        // GET: Questions/Details/5
+        // GET: DParticipants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +32,39 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
+            var dParticipant = await _context.dParticipants
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (dParticipant == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(dParticipant);
         }
 
-        // GET: Questions/Create
+        // GET: DParticipants/Create
         public IActionResult Create()
         {
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id");
             return View();
         }
 
-        // POST: Questions/Create
+        // POST: DParticipants/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        public async Task<IActionResult> Create([Bind("Id,username,name,password,institute")] DParticipant dParticipant)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(question);
+                _context.Add(dParticipant);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            return View(dParticipant);
         }
 
-        // GET: Questions/Edit/5
+        // GET: DParticipants/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +72,22 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions.FindAsync(id);
-            if (question == null)
+            var dParticipant = await _context.dParticipants.FindAsync(id);
+            if (dParticipant == null)
             {
                 return NotFound();
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            return View(dParticipant);
         }
 
-        // POST: Questions/Edit/5
+        // POST: DParticipants/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,username,name,password,institute")] DParticipant dParticipant)
         {
-            if (id != question.Id)
+            if (id != dParticipant.Id)
             {
                 return NotFound();
             }
@@ -101,12 +96,12 @@ namespace GamaExamBackend.Controllers
             {
                 try
                 {
-                    _context.Update(question);
+                    _context.Update(dParticipant);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!QuestionExists(question.Id))
+                    if (!DParticipantExists(dParticipant.Id))
                     {
                         return NotFound();
                     }
@@ -117,11 +112,10 @@ namespace GamaExamBackend.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            return View(dParticipant);
         }
 
-        // GET: Questions/Delete/5
+        // GET: DParticipants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +123,30 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
+            var dParticipant = await _context.dParticipants
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (dParticipant == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(dParticipant);
         }
 
-        // POST: Questions/Delete/5
+        // POST: DParticipants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var question = await _context.dQuestions.FindAsync(id);
-            _context.dQuestions.Remove(question);
+            var dParticipant = await _context.dParticipants.FindAsync(id);
+            _context.dParticipants.Remove(dParticipant);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool QuestionExists(int id)
+        private bool DParticipantExists(int id)
         {
-            return _context.dQuestions.Any(e => e.Id == id);
+            return _context.dParticipants.Any(e => e.Id == id);
         }
     }
 }

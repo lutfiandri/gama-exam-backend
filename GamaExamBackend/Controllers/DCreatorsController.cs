@@ -9,23 +9,22 @@ using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Controllers
 {
-    public class QuestionsController : Controller
+    public class DCreatorsController : Controller
     {
         private readonly DBExamContext _context;
 
-        public QuestionsController(DBExamContext context)
+        public DCreatorsController(DBExamContext context)
         {
             _context = context;
         }
 
-        // GET: Questions
+        // GET: DCreators
         public async Task<IActionResult> Index()
         {
-            var dBExamContext = _context.dQuestions.Include(q => q.Contest);
-            return View(await dBExamContext.ToListAsync());
+            return View(await _context.dCreators.ToListAsync());
         }
 
-        // GET: Questions/Details/5
+        // GET: DCreators/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +32,39 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
+            var dCreator = await _context.dCreators
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (dCreator == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(dCreator);
         }
 
-        // GET: Questions/Create
+        // GET: DCreators/Create
         public IActionResult Create()
         {
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id");
             return View();
         }
 
-        // POST: Questions/Create
+        // POST: DCreators/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        public async Task<IActionResult> Create([Bind("Id,username,name,password,institute")] DCreator dCreator)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(question);
+                _context.Add(dCreator);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            return View(dCreator);
         }
 
-        // GET: Questions/Edit/5
+        // GET: DCreators/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +72,22 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions.FindAsync(id);
-            if (question == null)
+            var dCreator = await _context.dCreators.FindAsync(id);
+            if (dCreator == null)
             {
                 return NotFound();
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            return View(dCreator);
         }
 
-        // POST: Questions/Edit/5
+        // POST: DCreators/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,QuestionNumber,QuestionText,Answers_A,Answers_B,Answers_C,Answers_D,Answers_E,TrueAnswer,ContestId")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,username,name,password,institute")] DCreator dCreator)
         {
-            if (id != question.Id)
+            if (id != dCreator.Id)
             {
                 return NotFound();
             }
@@ -101,12 +96,12 @@ namespace GamaExamBackend.Controllers
             {
                 try
                 {
-                    _context.Update(question);
+                    _context.Update(dCreator);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!QuestionExists(question.Id))
+                    if (!DCreatorExists(dCreator.Id))
                     {
                         return NotFound();
                     }
@@ -117,11 +112,10 @@ namespace GamaExamBackend.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ContestId"] = new SelectList(_context.dContests, "Id", "Id", question.ContestId);
-            return View(question);
+            return View(dCreator);
         }
 
-        // GET: Questions/Delete/5
+        // GET: DCreators/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +123,30 @@ namespace GamaExamBackend.Controllers
                 return NotFound();
             }
 
-            var question = await _context.dQuestions
-                .Include(q => q.Contest)
+            var dCreator = await _context.dCreators
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (dCreator == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(dCreator);
         }
 
-        // POST: Questions/Delete/5
+        // POST: DCreators/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var question = await _context.dQuestions.FindAsync(id);
-            _context.dQuestions.Remove(question);
+            var dCreator = await _context.dCreators.FindAsync(id);
+            _context.dCreators.Remove(dCreator);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool QuestionExists(int id)
+        private bool DCreatorExists(int id)
         {
-            return _context.dQuestions.Any(e => e.Id == id);
+            return _context.dCreators.Any(e => e.Id == id);
         }
     }
 }
