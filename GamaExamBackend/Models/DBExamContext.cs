@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GamaExamBackend.Models;
 
 namespace GamaExamBackend.Models
 {
@@ -18,6 +19,7 @@ namespace GamaExamBackend.Models
         public DbSet<Question> dQuestions { get; set; }
         public DbSet<Contest> dContests { get; set; }
         public DbSet<ContestAttempt> dContestsAttempt { get; set; }
+        public DbSet<QuestionAnswer> QuestionAnswer { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +28,10 @@ namespace GamaExamBackend.Models
             modelBuilder.Entity<Question>().ToTable("dQuestions");
             modelBuilder.Entity<Contest>().ToTable("dContests");
             modelBuilder.Entity<ContestAttempt>().ToTable("dContestsAttempt");
+            modelBuilder.Entity<QuestionAnswer>().ToTable("dQuestionAnswer");
         }
+
+        
 
     }
 }

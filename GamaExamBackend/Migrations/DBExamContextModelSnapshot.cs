@@ -63,9 +63,6 @@ namespace GamaExamBackend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<int>("ContestId")
                         .HasColumnType("int");
 
@@ -163,14 +160,39 @@ namespace GamaExamBackend.Migrations
                     b.Property<string>("QuestionText")
                         .HasColumnType("nvarchar(400)");
 
-                    b.Property<int>("TrueAnswer")
-                        .HasColumnType("int");
+                    b.Property<string>("TrueAnswer")
+                        .IsRequired()
+                        .HasColumnType("char(1)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContestId");
 
                     b.ToTable("dQuestions");
+                });
+
+            modelBuilder.Entity("GamaExamBackend.Models.QuestionAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("char(1)");
+
+                    b.Property<int>("ContestAttemptId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContestAttemptId");
+
+                    b.ToTable("dQuestionAnswer");
                 });
 
             modelBuilder.Entity("GamaExamBackend.Models.Contest", b =>
@@ -218,9 +240,25 @@ namespace GamaExamBackend.Migrations
                     b.Navigation("Contest");
                 });
 
+            modelBuilder.Entity("GamaExamBackend.Models.QuestionAnswer", b =>
+                {
+                    b.HasOne("GamaExamBackend.Models.ContestAttempt", "ContestAttempt")
+                        .WithMany("AnswerCollection")
+                        .HasForeignKey("ContestAttemptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ContestAttempt");
+                });
+
             modelBuilder.Entity("GamaExamBackend.Models.Contest", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("GamaExamBackend.Models.ContestAttempt", b =>
+                {
+                    b.Navigation("AnswerCollection");
                 });
 
             modelBuilder.Entity("GamaExamBackend.Models.DCreator", b =>

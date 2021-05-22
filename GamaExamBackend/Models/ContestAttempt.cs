@@ -12,8 +12,8 @@ namespace GamaExamBackend.Models
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "nvarchar(500)")]
-        public string Answer { get; set; }
+        public ICollection<QuestionAnswer> AnswerCollection { get; set; }
+
         [Column(TypeName = "int")]
         public int TimeLeft { get; set; } // detik
 

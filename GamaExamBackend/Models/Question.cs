@@ -31,7 +31,7 @@ namespace GamaExamBackend.Models
         [Column(TypeName = "nvarchar(200)")]
         public string Answers_E { get; set; }
 
-        [Column(TypeName = "int")]
+        [Column(TypeName = "char(1)")]
         public int TrueAnswer { get; set; }
         
         [ForeignKey("Contest")]

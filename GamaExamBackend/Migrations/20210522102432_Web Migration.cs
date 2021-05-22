@@ -76,7 +76,6 @@ namespace GamaExamBackend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Answer = table.Column<string>(type: "nvarchar(500)", nullable: true),
                     TimeLeft = table.Column<int>(type: "int", nullable: false),
                     ContestId = table.Column<int>(type: "int", nullable: false),
                     ParticipantId = table.Column<int>(type: "int", nullable: false)
@@ -111,7 +110,7 @@ namespace GamaExamBackend.Migrations
                     Answers_C = table.Column<string>(type: "nvarchar(200)", nullable: true),
                     Answers_D = table.Column<string>(type: "nvarchar(200)", nullable: true),
                     Answers_E = table.Column<string>(type: "nvarchar(200)", nullable: true),
-                    TrueAnswer = table.Column<int>(type: "int", nullable: false),
+                    TrueAnswer = table.Column<string>(type: "char(1)", nullable: false),
                     ContestId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -121,6 +120,27 @@ namespace GamaExamBackend.Migrations
                         name: "FK_dQuestions_dContests_ContestId",
                         column: x => x.ContestId,
                         principalTable: "dContests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "dQuestionAnswer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionNumber = table.Column<int>(type: "int", nullable: false),
+                    Answer = table.Column<string>(type: "char(1)", nullable: false),
+                    ContestAttemptId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dQuestionAnswer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_dQuestionAnswer_dContestsAttempt_ContestAttemptId",
+                        column: x => x.ContestAttemptId,
+                        principalTable: "dContestsAttempt",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -146,6 +166,11 @@ namespace GamaExamBackend.Migrations
                 column: "ParticipantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_dQuestionAnswer_ContestAttemptId",
+                table: "dQuestionAnswer",
+                column: "ContestAttemptId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_dQuestions_ContestId",
                 table: "dQuestions",
                 column: "ContestId");
@@ -154,10 +179,13 @@ namespace GamaExamBackend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "dContestsAttempt");
+                name: "dQuestionAnswer");
 
             migrationBuilder.DropTable(
                 name: "dQuestions");
+
+            migrationBuilder.DropTable(
+                name: "dContestsAttempt");
 
             migrationBuilder.DropTable(
                 name: "dContests");
