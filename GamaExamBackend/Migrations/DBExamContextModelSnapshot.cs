@@ -72,6 +72,9 @@ namespace GamaExamBackend.Migrations
                     b.Property<int>("TimeLeft")
                         .HasColumnType("int");
 
+                    b.Property<float>("score")
+                        .HasColumnType("float(24)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContestId");

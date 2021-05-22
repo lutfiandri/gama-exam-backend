@@ -77,6 +77,7 @@ namespace GamaExamBackend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TimeLeft = table.Column<int>(type: "int", nullable: false),
+                    score = table.Column<float>(type: "float(24)", nullable: false),
                     ContestId = table.Column<int>(type: "int", nullable: false),
                     ParticipantId = table.Column<int>(type: "int", nullable: false)
                 },

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamaExamBackend.Migrations
 {
     [DbContext(typeof(DBExamContext))]
-    [Migration("20210522102432_Web Migration")]
+    [Migration("20210522112138_Web Migration")]
     partial class WebMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,6 +73,9 @@ namespace GamaExamBackend.Migrations
 
                     b.Property<int>("TimeLeft")
                         .HasColumnType("int");
+
+                    b.Property<float>("score")
+                        .HasColumnType("float(24)");
 
                     b.HasKey("Id");
 

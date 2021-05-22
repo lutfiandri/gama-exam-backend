@@ -17,6 +17,9 @@ namespace GamaExamBackend.Models
         [Column(TypeName = "int")]
         public int TimeLeft { get; set; } // detik
 
+        [Column(TypeName = "float(24)")]
+        public float score { get; set; }
+
         [ForeignKey("Contest")]
         public int ContestId { get; set; }
         public Contest Contest { get; set; }
