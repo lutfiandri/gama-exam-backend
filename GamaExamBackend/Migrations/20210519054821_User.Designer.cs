@@ -4,14 +4,16 @@ using GamaExamBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GamaExamBackend.Migrations
 {
     [DbContext(typeof(DBExamContext))]
-    partial class DBExamContextModelSnapshot : ModelSnapshot
+    [Migration("20210519054821_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,24 +152,24 @@ namespace GamaExamBackend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CreatedContestIds")
+                    b.Property<string>("createdContestIds")
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("DoneContestIds")
+                    b.Property<string>("doneContestIds")
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("Institute")
+                    b.Property<string>("institute")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("password")
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("dUser");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("GamaExamBackend.Models.Contest", b =>

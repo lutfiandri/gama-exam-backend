@@ -29,7 +29,7 @@ namespace GamaExamBackend.Controllers
 
         // GET: api/Question/contest/2
         [HttpGet("contest/{contestId}")]
-        public async Task<ActionResult<IEnumerable<Question>>> GetContestQuestion(int contestId)
+        public async Task<ActionResult<IEnumerable<Question>>> GetContestQuestions(int contestId)
         {
             var all = await _context.dQuestions.ToListAsync();
             return all.Where(q => q.ContestId == contestId).ToArray();
